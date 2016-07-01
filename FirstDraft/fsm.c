@@ -38,13 +38,11 @@ void processDistance(eventType_t sensor, int val) {
 
 void movimiento() {
 	//get a single number
-	int sensor,j=0;
+    int sensor;
 	int val=0;
-	//printf("Movimiento: ");
-	for (sensor=DLATIZQ,j=1; sensor<=DLATDCHA;sensor++,j*=2) {
-		val += mapa[sensor]*j;
-	}
-	//printf(" val %d\n",val);
+	for (sensor=DLATIZQ; sensor<=DLATDCHA;sensor++) 
+        val |= (mapa[sensor] << sensor);
+	
 	
 	switch (val) {
 		case 0:
