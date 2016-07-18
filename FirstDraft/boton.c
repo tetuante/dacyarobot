@@ -9,47 +9,37 @@
 
 #include <wiringPi.h>
 #include "mcp3008.h"
-#include "distLateral.h"
+#include "boton.h"
 #include "colaEventos.h"
 #include "tipos.h"
 
-// periodo de muestreo en ms
-static int samplePeriod = 2000;
-
-
-void* entryDistanciaLateral(void* arg)
-{
-  
-	printf("Entry boton \n");
-    while (1) {  
-	
-		unsigned tic = millis();
-		int distDcha = myAnalogRead(INFRA_LATERAL_DCHA);
-		
-		int distIzq = myAnalogRead(INFRA_LATERAL_IZQ);
-		printf("Hilo lateral. Dcha: %d Izq: %d \n",distDcha,distIzq);
-		
-		// crear eventos para el controlador
-		evento_t* evizq;
-		evizq = (evento_t*) malloc(sizeof(evento_t));
-		evizq->tipo = DLATIZQ;
-		evizq->data = distIzq;
-		
-		evento_t* evdcha;
-		evdcha = (evento_t*) malloc(sizeof(evento_t));
-		evdcha->tipo = DLATDCHA;
-		evdcha->data = distDcha;
-		
-		enviaEvento(evizq);
-		enviaEvento(evdcha);
-		unsigned toc = millis();
-		
-		// Espera al siguiente muestreo
-		if ( (toc-tic) < samplePeriod) 	
-			delay(samplePeriod - (toc-tic));
-		else
-			fprintf(stderr, "ERROR: miss FRONT period!!");					
-    }	    
-
-    return 0;
+unsigned int lastInt=0; //tie of las interrupt
+#define MILIS_BTW_INT 500
+void tratarBoton() {
+		printf("RECIBIDA INTERRUPCION\n");
+		unsigned int now = millis();
+		if ( (now - lastInt) > MILIS_BTW_INT ) {
+			evento_t* boton;
+			boton = (evento_t*) malloc(sizeof(evento_t));
+			boton->tipo = BOTON;
+			boton->data = 0;		
+			enviaEvento(boton);
+		}
+		lastInt = now;
 }
+
+void botonSetup() {
+	/*
+	pinMode(BOTONPIN,INPUT);
+	printf("LEYENDO....\n");
+	int i;
+	for (i=0;i<20;i++) {
+		int a = digitalRead(BOTONPIN);
+		printf("Leido boton %d\n",a);
+		delay(500);
+	}
+	*/
+	printf("CONFIGURO INT\n");
+	wiringPiISR(BOTONPIN,INT_EDGE_RISING, tratarBoton);
+}
+
