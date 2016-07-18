@@ -1,6 +1,6 @@
 #!/usr/bin/make
 TARGET=robot
-SOURCES=main.c fsm.c colaEventos.c distFrontal.c distLateral.c mcp3008.c controlServo.c motores.c
+SOURCES=main.c fsm.c colaEventos.c distFrontal.c distLateral.c mcp3008.c controlServo.c motores.c encoder.c boton.c
 
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 MY_INCLUDES=.

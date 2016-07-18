@@ -22,7 +22,7 @@ char* event2string(eventType_t ev) {
 }
 
 // tiempo en stop (en ms)
-#define _TIEMPO_INICIAL_STOP_ 20000
+#define _TIEMPO_INICIAL_STOP_ 20
 #define UMBRAL 400
 
 // indexado con evetType
@@ -86,6 +86,7 @@ int fsm() {
 		switch (estadoActual) {
 
 			case PARADO:
+				parar();
 				switch (ev->tipo) {
 					case DFRONTIZQ:
 					case DFRONTDCHA:
@@ -93,15 +94,19 @@ int fsm() {
 					case DLATDCHA:
 						//printf("FSM: recibido evento %s. Distancia: %d\n",event2string(ev->tipo),ev->data);
 						processDistance(ev->tipo,ev->data);
-						break;				
+						break;		
+					case BOTON:
+						estadoActual = CIRCULANDO;			
 					default:
 						break;			
 				}
+				/*
 				current_time = millis();
 				if (current_time - start_time >  _TIEMPO_INICIAL_STOP_) {
 					estadoActual = CIRCULANDO;
 					//printf("PASAMOS A CIRCULAR\n");
-				}	
+				}
+				*/
 				break;
 
 			case CIRCULANDO:	
@@ -112,7 +117,10 @@ int fsm() {
 					case DLATDCHA:
 						//printf("FSM: recibido evento %s. Distancia: %d\n",event2string(ev->tipo),ev->data);
 						processDistance(ev->tipo,ev->data);
-						break;				
+						break;
+					case BOTON:
+						estadoActual = PARADO;
+						parar();				
 					default:
 						break;			
 				}

@@ -27,7 +27,7 @@ void* entryDistanciaLateral(void* arg)
 		int distDcha = myAnalogRead(INFRA_LATERAL_DCHA);
 		
 		int distIzq = myAnalogRead(INFRA_LATERAL_IZQ);
-		printf("Hilo lateral. Dcha: %d Izq: %d \n",distDcha,distIzq);
+		//printf("Hilo lateral. Dcha: %d Izq: %d \n",distDcha,distIzq);
 		
 		// crear eventos para el controlador
 		evento_t* evizq;
